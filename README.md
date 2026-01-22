@@ -68,68 +68,68 @@ Result: 85-95% accuracy, works on catch-all domains
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────┐
-│                           SIA EMAIL VERIFIER                                   │
+│                           SIA EMAIL VERIFIER                                  │
 ├───────────────────────────────────────────────────────────────────────────────┤
-│                                                                                │
+│                                                                               │
 │   ┌─────────────────────────────────────────────────────────────────────────┐ │
-│   │                           API LAYER (Hono)                               │ │
+│   │                           API LAYER (Hono)                              │ │
 │   │  POST /verify      POST /verify/bulk      GET /health                   │ │
 │   │  POST /oracle/*    POST /passive          POST /timing                  │ │
 │   └────────────────────────────────┬────────────────────────────────────────┘ │
-│                                    │                                           │
+│                                    │                                          │
 │   ┌────────────────────────────────▼────────────────────────────────────────┐ │
-│   │                    INFRASTRUCTURE FINGERPRINTING                         │ │
-│   │                                                                          │ │
-│   │  Input: user@company.com                                                 │ │
+│   │                    INFRASTRUCTURE FINGERPRINTING                        │ │
+│   │                                                                         │ │
+│   │  Input: user@company.com                                                │ │
 │   │  Output: { provider: "MICROSOFT", confidence: 0.99 }                    │ │
-│   │                                                                          │ │
+│   │                                                                         │ │
 │   │  How: MX record analysis → mx1.outlook.com → Microsoft 365              │ │
 │   └────────────────────────────────┬────────────────────────────────────────┘ │
-│                                    │                                           │
+│                                    │                                          │
 │            ┌───────────────────────┼───────────────────────┐                  │
 │            ▼                       ▼                       ▼                  │
-│   ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐           │
-│   │   MICROSOFT     │   │     GOOGLE      │   │    PASSIVE      │           │
-│   │   365 ORACLE    │   │    ORACLE       │   │    SIGNALS      │           │
-│   │                 │   │                 │   │                 │           │
-│   │ GetCredentialType   │ Signin page     │   │ • Gravatar     │           │
-│   │ API endpoint    │   │ scraping with   │   │ • GitHub       │           │
-│   │                 │   │ AT token        │   │ • HIBP         │           │
-│   │ Reliability:    │   │                 │   │ • Discord      │           │
-│   │ 95%             │   │ Reliability:    │   │ • Twitter      │           │
-│   │                 │   │ 93%             │   │                 │           │
-│   └────────┬────────┘   └────────┬────────┘   └────────┬────────┘           │
-│            │                     │                     │                     │
-│            └─────────────────────┼─────────────────────┘                     │
-│                                  ▼                                           │
-│   ┌──────────────────────────────────────────────────────────────────────┐  │
-│   │                     BAYESIAN FUSION ENGINE                            │  │
-│   │                                                                       │  │
-│   │  Inputs: [                                                           │  │
-│   │    { source: "microsoft", verdict: "EXISTS", confidence: 0.95 },    │  │
-│   │    { source: "gravatar", verdict: "EXISTS", confidence: 0.85 },     │  │
-│   │    { source: "github", verdict: "NOT_FOUND", confidence: 0.80 }     │  │
-│   │  ]                                                                   │  │
-│   │                                                                       │  │
-│   │  Process: Bayesian probability fusion with likelihood ratios         │  │
-│   │                                                                       │  │
-│   │  Output: {                                                           │  │
-│   │    probability: 0.94,                                                │  │
-│   │    classification: "VALID",                                          │  │
-│   │    confidence: 0.89,                                                 │  │
-│   │    agreementLevel: "HIGH"                                            │  │
-│   │  }                                                                   │  │
-│   └──────────────────────────────────────────────────────────────────────┘  │
-│                                                                                │
-│   ┌──────────────────────────────────────────────────────────────────────┐   │
+│   ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐             │
+│   │   MICROSOFT     │   │     GOOGLE      │   │    PASSIVE      │             │
+│   │   365 ORACLE    │   │    ORACLE       │   │    SIGNALS      │             │
+│   │                 │   │                 │   │                 │             │
+│   │ GetCredentialType   │ Signin page     │   │ • Gravatar      │             │
+│   │ API endpoint    │   │ scraping with   │   │ • GitHub        │             │
+│   │                 │   │ AT token        │   │ • HIBP          │             │
+│   │ Reliability:    │   │                 │   │ • Discord       │             │
+│   │ 95%             │   │ Reliability:    │   │ • Twitter       │             │
+│   │                 │   │ 93%             │   │                 │             │
+│   └────────┬────────┘   └────────┬────────┘   └────────┬────────┘             │
+│            │                     │                     │                      │
+│            └─────────────────────┼─────────────────────┘                      │
+│                                  ▼                                            │
+│   ┌──────────────────────────────────────────────────────────────────────┐    │
+│   │                     BAYESIAN FUSION ENGINE                           │    │
+│   │                                                                      │    │
+│   │  Inputs: [                                                           │    │
+│   │    { source: "microsoft", verdict: "EXISTS", confidence: 0.95 },     │    │
+│   │    { source: "gravatar", verdict: "EXISTS", confidence: 0.85 },      │    │
+│   │    { source: "github", verdict: "NOT_FOUND", confidence: 0.80 }      │    │
+│   │  ]                                                                   │    │
+│   │                                                                      │    │
+│   │  Process: Bayesian probability fusion with likelihood ratios         │    │
+│   │                                                                      │    │
+│   │  Output: {                                                           │    │
+│   │    probability: 0.94,                                                │    │
+│   │    classification: "VALID",                                          │    │
+│   │    confidence: 0.89,                                                 │    │
+│   │    agreementLevel: "HIGH"                                            │    │
+│   │  }                                                                   │    │
+│   └──────────────────────────────────────────────────────────────────────┘    │
+│                                                                               │
+│   ┌──────────────────────────────────────────────────────────────────────┐    │
 │   │                      INFRASTRUCTURE LAYER                             │   │
 │   │                                                                       │   │
-│   │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐            │   │
-│   │  │  Redis   │  │  Proxy   │  │  Queue   │  │  HTTP    │            │   │
-│   │  │  Cache   │  │ Rotation │  │  (BullMQ)│  │  Client  │            │   │
-│   │  └──────────┘  └──────────┘  └──────────┘  └──────────┘            │   │
-│   └──────────────────────────────────────────────────────────────────────┘   │
-│                                                                                │
+│   │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐               │   │
+│   │  │  Redis   │  │  Proxy   │  │  Queue   │  │  HTTP    │               │   │
+│   │  │  Cache   │  │ Rotation │  │  (BullMQ)│  │  Client  │               │   │
+│   │  └──────────┘  └──────────┘  └──────────┘  └──────────┘               │   │
+│   └──────────────────────────────────────────────────────────────────────┘    │
+│                                                                               │
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
